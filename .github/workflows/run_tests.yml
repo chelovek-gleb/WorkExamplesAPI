@@ -1,0 +1,77 @@
+name: Automated tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_target:
+        description: Choose target
+        required: true
+        default: run_all_tests
+        type: choice
+        options:
+          - run_all_tests
+          - test_broken_helper
+          - test_check_group_member
+          - test_clear_history
+          - test_pin_room
+          - test_reply_message
+          - test_unpin_room
+
+jobs:
+  test: 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: run_all_tests
+        env:
+          WSS_TOKEN2: ${{ secrets.WSS_TOKEN2 }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          WSS_TOKEN: ${{ secrets.WSS_TOKEN }}
+        run: pytest -s -v
+
+      - name: test_broken_helper
+        if: github.event.inputs.deployment_target == 'test_broken_helper'
+        env:
+          WSS_TOKEN2: ${{ secrets.WSS_TOKEN2 }}
+        run: pytest tests/test_broken_helper.py -s -v
+
+      - name: test_check_group_member
+        if: github.event.inputs.deployment_target == 'test_check_group_member'
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: pytest tests/test_check_group_member.py -s -v
+
+      - name: test_clear_history
+        if: github.event.inputs.deployment_target == 'test_clear_history'
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: pytest tests/test_clear_history.py -s -v
+    
+      - name: test_pin_room
+        if: github.event.inputs.deployment_target == 'test_pin_room'
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: pytest tests/test_pin_room.py -s -v
+
+      - name: test_reply_message
+        if: github.event.inputs.deployment_target == 'test_reply_message'
+        env:
+          WSS_TOKEN: ${{ secrets.WSS_TOKEN }}
+        run: pytest tests/test_reply_message.py -s -v
+
+      - name: test_unpin_room
+        if: github.event.inputs.deployment_target == 'test_unpin_room'
+        env:
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: pytest tests/test_unpin_room.py -s -v
