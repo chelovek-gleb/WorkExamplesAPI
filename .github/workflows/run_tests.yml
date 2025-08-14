@@ -15,6 +15,7 @@ on:
           - test_clear_history
           - test_pin_room
           - test_reply_message
+          - test_unpin_room
           
 
 jobs:
