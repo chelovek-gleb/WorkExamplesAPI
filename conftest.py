@@ -13,6 +13,7 @@ def check():
     """Фикстура для Checking"""
     return Checking()
 
+"""Фикстура с параметризацией. Получаем wss_url как request, устанавливает соединение, после чего его закрывает"""
 @pytest.fixture
 def wss_actions(request):
     wss_url = request.param
