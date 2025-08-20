@@ -13,6 +13,10 @@ env/
 ENV/
 .env/
 .venv/
+.env
+.env.*
+**/.env
+**/.env.*
 
 # -----------------------
 # Pytest
